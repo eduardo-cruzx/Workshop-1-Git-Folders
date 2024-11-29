@@ -12,13 +12,24 @@
 
 # Imports do Notebook Databricks
 
-from pyspark.sql.functions import month, avg
+from pyspark.sql.functions import month, avg, col, when
 
 # COMMAND ----------
 
 # Leitura de dados tratados do Delta Lake
 
 df_silver = spark.read.format("delta").load("/mnt/silver/nyc_taxi")
+
+# COMMAND ----------
+
+# Adicionando uma coluna de classificação de receita 
+
+df_silver = df_silver.withColumn(
+    "revenue_category",
+    when(col("total_amount") < 10, "Small")
+    .when((col("total_amount") >= 10) & (col("total_amount") < 50), "Average")
+    .otherwise("High")
+)
 
 # COMMAND ----------
 

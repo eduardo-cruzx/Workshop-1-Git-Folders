@@ -12,7 +12,7 @@
 
 # Imports do Notebook Databricks
 
-from pyspark.sql.functions import to_timestamp, when, col
+from pyspark.sql.functions import to_timestamp
 
 # COMMAND ----------
 
@@ -41,12 +41,12 @@ df_silver = (
 
 # Adicionando uma coluna de classificação de receita 
 
-df_silver = df_silver.withColumn(
-    "revenue_category",
-    when(col("total_amount") < 10, "Baixa")
-    .when((col("total_amount") >= 10) & (col("total_amount") < 50), "Média")
-    .otherwise("Alta")
-)
+# df_silver = df_silver.withColumn(
+#     "revenue_category",
+#     when(col("total_amount") < 10, "Small")
+#     .when((col("total_amount") >= 10) & (col("total_amount") < 50), "Average")
+#     .otherwise("High")
+# )
 
 # COMMAND ----------
 
