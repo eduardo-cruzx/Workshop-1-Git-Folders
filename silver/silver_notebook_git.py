@@ -47,12 +47,12 @@ df_silver = df_silver.filter(col("passenger_count") >= 1)
 
 # Adicionando uma coluna de classificação de receita 
 
-# df_silver = df_silver.withColumn(
-#     "revenue_category",
-#     when(col("total_amount") < 10, "Small")
-#     .when((col("total_amount") >= 10) & (col("total_amount") < 50), "Average")
-#     .otherwise("High")
-# )
+df_silver = df_silver.withColumn(
+    "revenue_category",
+    when(col("total_amount") < 10, "Small")
+    .when((col("total_amount") >= 10) & (col("total_amount") < 50), "Average")
+    .otherwise("High")
+)
 
 # COMMAND ----------
 
