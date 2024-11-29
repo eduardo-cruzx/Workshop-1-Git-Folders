@@ -38,6 +38,12 @@ df_silver = (
 
 # COMMAND ----------
 
+# Validação: Número de passageiros deve ser maior ou igual a 1 
+
+df_silver = df_silver.filter(col("passenger_count") >= 1)
+
+# COMMAND ----------
+
 # Adicionando uma coluna de classificação de receita 
 
 df_silver = df_silver.withColumn(
