@@ -13,6 +13,7 @@
 # Imports do Notebook Databricks
 
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, IntegerType, TimestampType, LongType
+from pyspark.sql.functions import col
 
 
 # COMMAND ----------
@@ -49,10 +50,45 @@ file_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024
 
 dbutils.fs.cp(file_url, "/mnt/data/nyc_taxi.parquet")
 
-df_bronze = spark.read.schema(schema).parquet("/mnt/data/nyc_taxi.parquet")
+df_raw = spark.read.schema(schema).parquet("/mnt/data/nyc_taxi.parquet")
 
-display(df_bronze)
+display(df_raw)
 
+
+# COMMAND ----------
+
+# Validação: Detectar registros invalidos
+
+df_invalid = df_raw.filter(
+    (col("passenger_count").isNull()) |
+    (col("trip_distance").isNull()) |
+    (col("total_amount").isNull())
+)
+
+# COMMAND ----------
+
+# Contar e mostrar registros inválidos
+
+invalid_count = df_invalid.count()
+print(f"Número de registros inválidos: {invalid_count}")
+
+# COMMAND ----------
+
+# Salvar registros inválidos para auditoria
+
+if invalid_count > 0:
+    df_invalid.write.format("delta").mode("overwrite").save("/mnt/bronze/invalid_nyc_taxi")
+
+
+# COMMAND ----------
+
+# Filtrar registros válidos
+
+df_bronze = df_raw.filter(
+    (col("passenger_count").isNotNull()) &
+    (col("trip_distance").isNotNull()) &
+    (col("total_amount").isNotNull())
+)
 
 # COMMAND ----------
 
