@@ -38,23 +38,6 @@ df_silver = (
 
 # COMMAND ----------
 
-# Validação: Número de passageiros deve ser maior ou igual a 1 
-
-df_silver = df_silver.filter(col("passenger_count") >= 1)
-
-# COMMAND ----------
-
-# Adicionando uma coluna de classificação de receita 
-
-df_silver = df_silver.withColumn(
-    "revenue_category",
-    when(col("total_amount") < 10, "Small")
-    .when((col("total_amount") >= 10) & (col("total_amount") < 50), "Average")
-    .otherwise("High")
-)
-
-# COMMAND ----------
-
 # Escrita de dados processados para o Delta Lake
 
 df_silver.write.format("delta").mode("overwrite").save("/mnt/silver/nyc_taxi_updated")
