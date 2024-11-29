@@ -36,6 +36,12 @@ df_silver = (
     .drop("tpep_pickup_datetime", "tpep_dropoff_datetime")
 )
 
+# COMMAND ----------
+
+# Validação: Número de passageiros deve ser maior ou igual a 1
+
+df_silver = df_silver.filter(col("passenger_count") >= 1)
+
 
 # COMMAND ----------
 
