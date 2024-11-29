@@ -38,6 +38,13 @@ df_silver = (
 
 # COMMAND ----------
 
+# Validação: Número de passageiros deve ser maior ou igual a 1 
+
+df_silver = df_silver.filter(col("passenger_count") >= 1)
+
+
+# COMMAND ----------
+
 # Escrita de dados processados para o Delta Lake
 
 df_silver.write.format("delta").mode("overwrite").save("/mnt/silver/nyc_taxi_updated")
