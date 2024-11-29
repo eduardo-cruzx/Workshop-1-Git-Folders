@@ -12,7 +12,7 @@
 
 # Imports do Notebook Databricks
 
-from pyspark.sql.functions import to_timestamp
+from pyspark.sql.functions import to_timestamp, when, col
 
 # COMMAND ----------
 
@@ -39,9 +39,20 @@ df_silver = (
 
 # COMMAND ----------
 
+# Adicionando uma coluna de classificação de receita 
+
+df_silver = df_silver.withColumn(
+    "revenue_category",
+    when(col("total_amount") < 10, "Baixa")
+    .when((col("total_amount") >= 10) & (col("total_amount") < 50), "Média")
+    .otherwise("Alta")
+)
+
+# COMMAND ----------
+
 # Escrita de dados processados para o Delta Lake
 
-df_silver.write.format("delta").mode("overwrite").save("/mnt/silver/nyc_taxi")
+df_silver.write.format("delta").mode("overwrite").save("/mnt/silver/nyc_taxi_updated")
 
 
 # COMMAND ----------
